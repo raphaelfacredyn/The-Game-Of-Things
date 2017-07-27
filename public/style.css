@@ -1,0 +1,19 @@
+#defaultCanvas0 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+#pageContent {
+  position: relative;
+  z-index: 2;
+  width: 50%;
+}
+
+
+/*
+184,84,210
+95,47,243
+57,92,169
+*/

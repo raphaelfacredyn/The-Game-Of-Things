@@ -1,0 +1,16 @@
+{
+  "name": "agar.io",
+  "version": "1.0.0",
+  "description": "Agar.io clone",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raphael Facredyn",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "matter-js": "^0.12.0",
+    "socket.io": "^1.7.3"
+  }
+}
