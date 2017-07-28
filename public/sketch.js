@@ -11,6 +11,7 @@ var nameSize = 18;
 
 var playerImages = [];
 
+var b;
 //Variable is set by server later on
 var worldDimensions = {
   x: 1,
@@ -73,6 +74,7 @@ function worldUpdate(bodies) {
 }
 
 function displayBodies(bodies) {
+  b=bodies
   for (var i = 0; i < bodies.length; i++) {
     var body = bodies[i]
     if (body.label.split('_')[0] == 'player') {
@@ -97,6 +99,7 @@ function displayBodies(bodies) {
       rect(body.position.x - barSize / 2, body.position.y - 45, barSize, 10)
       fill(0, 255, 0)
       rect(body.position.x - barSize / 2, body.position.y - 45, barSize * body.health / body.maxHealth, 10)
+      console.log(body.angle)
     } else {
       strokeWeight(body.render.lineWidth)
       fill(body.render.fillStyle)
@@ -137,6 +140,9 @@ function windowResized() {
 
 function keyReleased() {
   if (key == ' ') {
-    socket.emit('newBullet', heading)
+    socket.emit('newBullet')
+  }
+  if (key == 'B') {
+    socket.emit('newBomb')
   }
 }

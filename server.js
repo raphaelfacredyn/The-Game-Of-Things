@@ -1,7 +1,6 @@
 //World Setup
 var Matter = require('matter-js')
 var engine = Matter.Engine.create();
-var decomp = require('poly-decomp');
 
 //Set Gravity
 engine.world.gravity = {
@@ -11,8 +10,8 @@ engine.world.gravity = {
 
 //Make Walls
 var worldDimensions = {
-  x: 1000,
-  y: 1000
+  x: 1600,
+  y: 1600
 }
 var wallWidth = 100;
 Matter.World.add(engine.world, [
@@ -51,15 +50,16 @@ var lifeBoostGain = 5;
 var startingHealth = 100;
 var groundBulletDensity = 20000; // less is more bullets
 var numOfGroundBullets = worldDimensions.x * worldDimensions.y / groundBulletDensity;
-var lifeBoostDensity = 240000; // less is more bullets
+var lifeBoostDensity = 960000; // less is more bullets
 var numOfLifeBoosts = worldDimensions.x * worldDimensions.y / lifeBoostDensity;
 var groundBulletSize = 6;
 var lifeBoostSize = 20;
 var bulletLifeTime = 8;
-var timeBetweenRegenerations = 1000;
-var regenerateAmount = 3;
+var timeBetweenRegenerations = 100;
+var regenerateAmount = 0.3;
 var playerCollisionDamage = bulletDamage;
 var numOfColors = 6;
+var bulletsNeededForABomb = 10;
 
 app.use(express.static('public'))
 
@@ -84,86 +84,108 @@ setInterval(function() {
   io.sockets.emit('worldUpdate', simplifyiedBodies)
 }, 1000 / fps);
 
-//Make bullets dissapear when they hit a wall
-Matter.Events.on(engine, 'collisionStart', function(event) {
-  var pairs = event.pairs;
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i];
-    if (pair.bodyA.label == 'wall' && pair.bodyB.label == 'bullet') {
-      Matter.World.remove(engine.world, pair.bodyB)
-    }
-    if (pair.bodyA.label == 'bullet' && pair.bodyB.label == 'wall') {
-      Matter.World.remove(engine.world, pair.bodyA)
-    }
-  }
-});
-
 //makes ground bullets dissapear on contact and add themselves to player
 Matter.Events.on(engine, 'collisionStart', function(event) {
-  var pairs = event.pairs;
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i];
-    if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label == 'groundBullet') {
-      pair.bodyA.numOfBullets++;
-      Matter.World.remove(engine.world, pair.bodyB)
+  try {
+    var pairs = event.pairs;
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i];
+      if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label == 'groundBullet') {
+        pair.bodyA.numOfBullets++;
+        Matter.World.remove(engine.world, pair.bodyB)
+      }
+      if (pair.bodyA.label == 'groundBullet' && pair.bodyB.label.split('_')[0] == 'player') {
+        Matter.World.remove(engine.world, pair.bodyA)
+        pair.bodyB.numOfBullets++;
+      }
     }
-    if (pair.bodyA.label == 'groundBullet' && pair.bodyB.label.split('_')[0] == 'player') {
-      Matter.World.remove(engine.world, pair.bodyA)
-      pair.bodyB.numOfBullets++;
-    }
-  }
+  } catch (e) {}
 });
 
 //makes life boosts dissapear on contact and add themselves to player
 Matter.Events.on(engine, 'collisionStart', function(event) {
-  var pairs = event.pairs;
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i];
-    if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label == 'lifeBoost') {
-      pair.bodyA.maxHealth += lifeBoostGain;
-      pair.bodyA.health = pair.bodyA.maxHealth;
-      Matter.World.remove(engine.world, pair.bodyB)
+  try {
+    var pairs = event.pairs;
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i];
+      if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label == 'lifeBoost') {
+        pair.bodyA.maxHealth += lifeBoostGain;
+        pair.bodyA.health += lifeBoostGain;
+        Matter.World.remove(engine.world, pair.bodyB)
+      }
+      if (pair.bodyA.label == 'lifeBoost' && pair.bodyB.label.split('_')[0] == 'player') {
+        Matter.World.remove(engine.world, pair.bodyA)
+        pair.bodyB.maxHealth += lifeBoostGain;
+        pair.bodyB.health += lifeBoostGain;
+      }
     }
-    if (pair.bodyA.label == 'lifeBoost' && pair.bodyB.label.split('_')[0] == 'player') {
-      Matter.World.remove(engine.world, pair.bodyA)
-      pair.bodyB.maxHealth += lifeBoostGain;
-      pair.bodyB.health = pair.bodyB.maxHealth;
-    }
-  }
+  } catch (e) {}
 });
 
 //Hurt people when they hit a bullet
 Matter.Events.on(engine, 'collisionStart', function(event) {
-  var pairs = event.pairs;
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i];
-    if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label == 'bullet') {
-      pair.bodyA.health -= bulletDamage
-      Matter.World.remove(engine.world, pair.bodyB)
-      if (pair.bodyA.health <= 0) {
-        io.sockets.connected[pair.bodyA.label.split('_')[1]].disconnect(); //Disconnect on death
+  try {
+    var pairs = event.pairs;
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i];
+      if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label == 'bullet') {
+        pair.bodyA.health -= bulletDamage
+        Matter.World.remove(engine.world, pair.bodyB)
+        if (pair.bodyA.health <= 0) {
+          try {
+            io.sockets.connected[pair.bodyA.label.split('_')[1]].disconnect(); //Disconnect on death
+          } catch (e) {}
+        }
+      }
+      if (pair.bodyA.label == 'bullet' && pair.bodyB.label.split('_')[0] == 'player') {
+        Matter.World.remove(engine.world, pair.bodyA)
+        pair.bodyB.health -= bulletDamage
+        if (pair.bodyB.health <= 0) {
+          io.sockets.connected[pair.bodyB.label.split('_')[1]].disconnect(); //Disconnect on death
+        }
       }
     }
-    if (pair.bodyA.label == 'bullet' && pair.bodyB.label.split('_')[0] == 'player') {
-      Matter.World.remove(engine.world, pair.bodyA)
-      pair.bodyB.health -= bulletDamage
-      if (pair.bodyB.health <= 0) {
-        io.sockets.connected[pair.bodyB.label.split('_')[1]].disconnect(); //Disconnect on death
+  } catch (e) {}
+});
+
+//Make bombs explode when a bullets hits them
+Matter.Events.on(engine, 'collisionStart', function(event) {
+  try {
+    var pairs = event.pairs;
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i];
+      if (pair.bodyA.label == 'bomb' && pair.bodyB.label == 'bullet') {
+        for (var i = -Math.PI; i < Math.PI; i += Math.PI / 4) {
+          newBullet(i + pair.bodyA.angle, pair.bodyA.position)
+        }
+
+        Matter.World.remove(engine.world, pair.bodyA)
+        Matter.World.remove(engine.world, pair.bodyB)
+      }
+      if (pair.bodyA.label == 'bullet' && pair.bodyB.label == 'bomb') {
+        for (var i = -Math.PI; i < Math.PI; i += Math.PI / 4) {
+          newBullet(i + pair.bodyB.angle, pair.bodyB.position)
+        }
+
+        Matter.World.remove(engine.world, pair.bodyA)
+        Matter.World.remove(engine.world, pair.bodyB)
       }
     }
-  }
+  } catch (e) {}
 });
 
 //Damage players when they hit each other
 Matter.Events.on(engine, 'collisionStart', function(event) {
-  var pairs = event.pairs;
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i];
-    if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label.split('_')[0] == 'player') {
-      pair.bodyA.health -= playerCollisionDamage;
-      pair.bodyB.health -= playerCollisionDamage;
+  try {
+    var pairs = event.pairs;
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i];
+      if (pair.bodyA.label.split('_')[0] == 'player' && pair.bodyB.label.split('_')[0] == 'player') {
+        pair.bodyA.health -= playerCollisionDamage;
+        pair.bodyB.health -= playerCollisionDamage;
+      }
     }
-  }
+  } catch (e) {}
 });
 
 // Regenerate Life
@@ -201,6 +223,7 @@ function createGroundBullets() {
   for (var i = 0; i < numOfGroundBullets; i++) {
     var groundBullet = Matter.Bodies.rectangle(random(worldDimensions.x), random(worldDimensions.y), groundBulletSize, groundBulletSize);
     groundBullet.label = "groundBullet"
+    groundBullet.restitution = 0.8
     Matter.World.add(engine.world, groundBullet)
   }
 }
@@ -217,14 +240,39 @@ function removeAllLifeBoosts() {
 function createLifeBoosts() {
   for (var i = 0; i < numOfLifeBoosts; i++) {
     var lifeBoost = Matter.Bodies.fromVertices(random(worldDimensions.x), random(worldDimensions.y), Matter.Vertices.fromPath("0 -4 4 -8 8 -8 12 -4 12 0 0 16 -12 0 -12 -4 -8 -8 -4 -8 0 -4"));
-    Matter.Body.rotate(lifeBoost, Math.random()*2*Math.PI)
+    Matter.Body.rotate(lifeBoost, Math.random() * 2 * Math.PI)
     lifeBoost.label = "lifeBoost"
+    lifeBoost.restitution = 0.8
     Matter.World.add(engine.world, lifeBoost)
   }
 }
 
-// Octagon
-// -20 30 0 30 10 20 10 0 0 -10 -20 -10 -30 0 -30 20 -20 30
+function createBomb(position) {
+  var bomb = Matter.Bodies.fromVertices(position.x, position.y, Matter.Vertices.fromPath("-20 30 0 30 10 20 10 0 0 -10 -20 -10 -30 0 -30 20 -20 30"));
+  bomb.label = "bomb"
+  bomb.restitution = 0.8
+  Matter.World.add(engine.world, bomb)
+}
+
+function newBullet(angle, position) {
+  var bulletHeading = {
+    x: Math.cos(angle),
+    y: Math.sin(angle)
+  }
+  bulletHeading = getUnitVector(bulletHeading)
+
+  var bullet = Matter.Bodies.circle(position.x + bulletHeading.x * defaultPlayerSize, position.y + bulletHeading.y * defaultPlayerSize, defaultBulletSize, { frictionAir: 0.001 });
+  bullet.label = 'bullet'
+  bullet.timeSinceBorn = 0
+
+  bulletHeading.x *= bulletSpeed
+  bulletHeading.y *= bulletSpeed
+
+  bullet.restitution = 0.8
+
+  Matter.Body.setVelocity(bullet, bulletHeading)
+  Matter.World.add(engine.world, bullet)
+}
 
 io.sockets.on('connection', newConnection)
 
@@ -235,6 +283,7 @@ function newConnection(socket) {
   player.skinID = random(numOfColors) - 1;
   player.health = startingHealth;
   player.maxHealth = player.health;
+  player.restitution = 0.8
   Matter.World.add(engine.world, player)
 
   socket.emit('worldDimensions', worldDimensions)
@@ -255,25 +304,19 @@ function newConnection(socket) {
     Matter.Body.setVelocity(player, heading)
   }
 
-  socket.on('newBullet', newBullet)
-
-  function newBullet(heading) {
+  socket.on('newBullet', function() {
     if (player.numOfBullets > 0) {
-      var bullet = Matter.Bodies.circle(player.position.x + heading.x * defaultPlayerSize, player.position.y + heading.y * defaultPlayerSize, defaultBulletSize);
-      bullet.label = 'bullet'
-      bullet.timeSinceBorn = 0
-      var playerHeading = {
-        x: Math.cos(player.angle),
-        y: Math.sin(player.angle)
-      }
-      playerHeading = getUnitVector(playerHeading)
-      playerHeading.x *= bulletSpeed
-      playerHeading.y *= bulletSpeed
-      Matter.Body.setVelocity(bullet, playerHeading)
-      Matter.World.add(engine.world, bullet)
-      player.numOfBullets--
+      newBullet(player.angle, player.position)
+      player.numOfBullets--;
     }
-  }
+  })
+
+  socket.on('newBomb', function() {
+    if (player.numOfBullets >= bulletsNeededForABomb) {
+      createBomb(player.position)
+      player.numOfBullets -= bulletsNeededForABomb;
+    }
+  })
 
   socket.on('disconnect', function() {
     Matter.World.remove(engine.world, player)
