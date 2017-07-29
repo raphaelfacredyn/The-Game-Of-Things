@@ -17,7 +17,7 @@ The beginnings of an io game made with socket.io and matter.js.
     ```
 
 
-* In [public/login.js](public/login.js) there is a line that looks like this:
+* In public/login.js there is a line that looks like this:
     ```javascript
     socket = io.connect('raphael-macbook.local:8080')
     ```
