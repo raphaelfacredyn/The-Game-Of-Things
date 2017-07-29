@@ -1,5 +1,4 @@
 # The Game of Things
-===================
 The beginnings of an io game made with socket.io and matter.js.
 
 
