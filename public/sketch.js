@@ -1,62 +1,52 @@
-var socket
+var socket //socket.io (live engine)
 
+//Variable is set by server later on
 var position = {
   x: 1,
   y: 1
 };
 
-var heading;
+var heading; // direction of player
 
-var nameSize = 18;
+var nameSize = 18; // size of the name labe
 
-var playerImages = [];
+var playerImages = []; // will contain all the player skins
 
-var b;
 //Variable is set by server later on
 var worldDimensions = {
   x: 1,
   y: 1
 };
 
-var inPlay = false;
+var inPlay = false; //wether you have started playing
 
 function setup() {
   createCanvas(windowWidth, windowHeight)
 
+  //Names of the skins
   var playerImageOptions = ['Blue.png', 'Green.png', 'Orange.png', 'Purple.png', 'Red.png', 'Turq.png']
 
+  //Load the skins into the array
   for (path in playerImageOptions) {
     playerImages.push(loadImage("sprites/players/" + playerImageOptions[path]))
   }
 
-  var name = prompt("What is your name?", "Unnamed");;
-
-  socket = io.connect('raphael-macbook.local:8080')
-
-  socket.emit('name', name)
-
-  socket.on('worldDimensions', setWorldDimensions)
-
-  socket.on('disconnect', iDied);
-
-  socket.on('worldUpdate', worldUpdate)
-
-  inPlay = true;
-
   imageMode(CENTER)
 }
 
-
+//recieve world dimensions from the server
 function setWorldDimensions(wd) {
   worldDimensions = wd;
 }
 
-
+//reload the page when you die
 function iDied() {
   location.reload();
 }
 
+//draw the grid background
 function drawGrid(sqrWidth, border) {
+  noStroke()
   fill(30)
   for (x = 0; x < worldDimensions.x - 1; x += (sqrWidth + border)) {
     for (y = 0; y < worldDimensions.y - 1; y += (sqrWidth + border)) {
@@ -65,42 +55,50 @@ function drawGrid(sqrWidth, border) {
   }
 }
 
-
+//Display the world
 function worldUpdate(bodies) {
   background(25)
+
+  //translate to the players location
   translate(-position.x + width / 2, -position.y + height / 2)
+
   drawGrid(60, 20);
+
   displayBodies(bodies)
 }
 
 function displayBodies(bodies) {
-  b=bodies
+  //Loop through all the bodies in the world
   for (var i = 0; i < bodies.length; i++) {
     var body = bodies[i]
-    if (body.label.split('_')[0] == 'player') {
+    //Check if the body is a player
+    if (body.label == 'player') {
+      //Draw the player image
       push()
       translate(body.position.x, body.position.y)
       rotate(body.angle)
       image(playerImages[body.skinID], 0, 0);
-
       pop()
+
+      //Write number of bullets if it is the current player
       var bodyColor = color(body.render.fillStyle);
       fill(color(255 - red(bodyColor), 255 - green(bodyColor), 255 - blue(bodyColor)))
-      var name = body.label.split('_')[2];
       textSize(nameSize);
-      if (body.label.split('_')[1] == socket.id) {
+      if (body.socketID == socket.id) {
         position = body.position
         text(body.numOfBullets, body.position.x - textWidth(body.numOfBullets) / 2, body.position.y - 60)
       } else {
-        text(name, body.position.x - textWidth(name) / 2, body.position.y)
+        text(body.name, body.position.x - textWidth(body.name) / 2, body.position.y)
       }
+
+      //Draw the health bar
       var barSize = body.maxHealth / 2
       fill(255, 0, 0)
       rect(body.position.x - barSize / 2, body.position.y - 45, barSize, 10)
       fill(0, 255, 0)
       rect(body.position.x - barSize / 2, body.position.y - 45, barSize * body.health / body.maxHealth, 10)
-      console.log(body.angle)
     } else {
+      //Draw shape from its vertices
       strokeWeight(body.render.lineWidth)
       fill(body.render.fillStyle)
       stroke(body.render.strokeStyle)

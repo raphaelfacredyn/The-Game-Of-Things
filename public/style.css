@@ -8,12 +8,19 @@
 #pageContent {
   position: relative;
   z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.loginPanel {
+  padding-top: 2cm;
   width: 50%;
 }
 
+input:focus, textarea:focus {
+    outline: none;
+}
 
-/*
-184,84,210
-95,47,243
-57,92,169
-*/
+.panel-title {
+  font-size: 20px;
+}
