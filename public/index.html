@@ -1,47 +1,42 @@
 <html>
 
-</head>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.8/p5.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<head>
+    <title>The Game Of Things</title>
 
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/socket.io.js"></script>
+    <script src="libraries/jquery.min.js"></script>
 
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.paper.theme.css">
 
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="libraries/bootstrap.min.js"></script>
 
 
-  <script src="sketch.js"></script>
+    <script src="sketch.js"></script>
+    <script src="login.js"></script>
 
-  <script src="login.js"></script>
-
-  <title>The Game Of Things</title>
-
-  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <center>
+<center>
     <div id="pageContent">
-      <div class="loginPanel">
-        <div class="panel panel-success">
-          <div class="panel-heading">
-            <h3 class="panel-title">The Game Of Things</h3>
-          </div>
-          <div class="panel-body">
-            <input type="text" id="nameInput" class="input" style="width: 50%" placeholder="Name">
-            <br>
-            <br>
-            <button type="button" class="btn btn-primary" onclick="login()">Start</button>
-          </div>
+        <div class="loginPanel">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">The Game Of Things</h3>
+                </div>
+                <div class="panel-body">
+                    <input type="text" id="nameInput" class="input" style="width: 50%" placeholder="Name">
+                    <br>
+                    <br>
+                    <button type="button" class="btn btn-primary" onclick="login()">Start</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </center>
+</center>
 </body>
 
 </html>

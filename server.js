@@ -322,6 +322,7 @@ function newBullet(angle, position, playerID) {
     });
     //Name it bullet
     bullet.label = 'bullet';
+
     //Start the clock of how long it has existed
     bullet.timeSinceBorn = 0;
 
