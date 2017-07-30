@@ -299,9 +299,14 @@ function createLifeBoosts() {
     }
 }
 
-function createBomb32Collide(position, socketID) {
+function createBomb(position, socketID, bullets, trigger, visibile) {
     var bomb = Matter.Bodies.fromVertices(position.x, position.y, Matter.Vertices.fromPath("-20 30 0 30 10 20 10 0 0 -10 -20 -10 -30 0 -30 20 -20 30"));
     bomb.label = "bomb";
+    if (!visibile) {
+        bomb.render.fillStyle = "transparent";
+    }
+    bomb.bullets = bullets;
+    bomb.trigger = trigger;
     bomb.restitution = 0.8;
     bomb.playerID = socketID;
     Matter.World.add(engine.world, bomb)
@@ -325,6 +330,8 @@ function newBullet(angle, position, playerID) {
 
     //Start the clock of how long it has existed
     bullet.timeSinceBorn = 0;
+
+    bullet.playerID = playerID;
 
     //Make the vector be the bullet's speed
     bulletHeading.x *= bulletSpeed;
@@ -395,7 +402,7 @@ function newConnection(socket) {
 
     socket.on('newBomb', function () {
         if (player.numOfBullets >= bulletsNeededForABomb) {
-            createBomb32Collide(player.position, player.socketID);
+            createBomb(player.position, player.socketID);
             player.numOfBullets -= bulletsNeededForABomb;
         }
     });
