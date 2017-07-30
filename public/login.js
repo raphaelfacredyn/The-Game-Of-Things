@@ -1,8 +1,8 @@
 //Save Username
 window.onbeforeunload = function() {
-  console.log($('#nameInput').val())
+  console.log($('#nameInput').val());
   localStorage.setItem("name", $('#nameInput').val());
-}
+};
 
 $(document).ready(function() {
   //Restore Username
@@ -16,7 +16,7 @@ $(document).ready(function() {
 
   //login when enter is pressed
   $("#nameInput").on('keyup', function(e) {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       login()
     }
   });
@@ -25,22 +25,22 @@ $(document).ready(function() {
 function login() {
 
   //get the username
-  name=$('#nameInput').val()
+  name=$('#nameInput').val();
 
   //connect to the server
-  socket = io.connect('raphael-macbook.local:8080')
+  socket = io.connect('raphael-macbook.local:8080');
 
   //send the username
-  socket.emit('name', name)
+  socket.emit('name', name);
 
-  //prepare to recieve world dimensions
-  socket.on('worldDimensions', setWorldDimensions)
+  //prepare to receive world dimensions
+  socket.on('worldDimensions', setWorldDimensions);
 
   //prepare to be disconnected on death
   socket.on('disconnect', iDied);
 
   //prepare to receive the map
-  socket.on('worldUpdate', worldUpdate)
+  socket.on('worldUpdate', worldUpdate);
 
   //start the game
   inPlay = true;
