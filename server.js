@@ -178,6 +178,10 @@ Matter.Events.on(engine, 'collisionStart', function (event) {
 });
 
 
+
+
+
+
 //Make bombs explode when a bullets hits them
 Matter.Events.on(engine, 'collisionStart', function (event) {
     //Try catch because sometimes the pairs are undefined for some reason
