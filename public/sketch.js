@@ -20,10 +20,6 @@ var worldDimensions = {
 
 var inPlay = false; //whether you have started playing
 
-var currentBombSelection = 0;
-
-var bombOptions = ["Shoot 32 Bullets In A Circle When Shot At", "Shoot 8 Bullets In A Circle On Proximity", "Shoot 10 Bullets In A Circle On Proximity"];
-
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 
@@ -69,8 +65,6 @@ function worldUpdate(bodies) {
 	drawGrid(60, 20);
 
 	displayBodies(bodies);
-
-	drawBombMenu();
 }
 
 function displayBodies(bodies) {
@@ -106,12 +100,7 @@ function displayBodies(bodies) {
 		} else {
 			//Draw shape from its vertices
 			strokeWeight(body.render.lineWidth);
-
-			if (body.render.fillStyle !== "transparent") {
-				fill(body.render.fillStyle);
-			} else {
-				fill(0, 0);
-			}
+            fill(body.render.fillStyle);
 			stroke(body.render.strokeStyle);
 			beginShape();
 			for (var j = 0; j < body.vertices.length; j++) {
@@ -136,7 +125,7 @@ function draw() {
 
 function getUnitVector(v) {
 	var scale = Math.sqrt(v.x * v.x + v.y * v.y);
-	if (scale != 0) {
+	if (scale !== 0) {
 		v.x = v.x / scale;
 		v.y = v.y / scale
 	}
@@ -152,10 +141,10 @@ function keyReleased() {
 		socket.emit('newBullet')
 	}
 	if (key === 'B') {
-		socket.emit('newBomb')
+	    var bombParams = getBombParams();
+		socket.emit('newBomb', bombParams.bullets, bombParams.trigger, bombParams.visible)
 	}
-}
-
-function drawBombMenu() {
-
+    if (key === 'S') {
+        toggleBombSelector();
+    }
 }

@@ -1,6 +1,5 @@
 //Save Username
 window.onbeforeunload = function() {
-    console.log($('#nameInput').val());
     localStorage.setItem("name", $('#nameInput').val());
 };
         
@@ -46,5 +45,8 @@ function login() {
     inPlay = true;
 
     //hide the login
-    $("#pageContent").hide();
+    $("#loginPanel").hide();
+
+    //show the bomb selector
+    $("#bombSelectorOuter").show();
 }
