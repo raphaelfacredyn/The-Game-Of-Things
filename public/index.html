@@ -12,20 +12,50 @@
 
     <script src="libraries/bootstrap.min.js"></script>
 
-
+    <script src="server-client-commons.js"></script>
     <script src="sketch.js"></script>
     <script src="login.js"></script>
+    <script src="bombSelector.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-<center>
-    <div id="pageContent">
-        <div class="loginPanel">
+<div id="pageContent">
+    <div id="bombSelectorOuter" style="display: none;">
+        <div class="panel panel-success" style="text-align: center">
+            <div class="panel-heading">
+                <h3 class="panel-title">Bomb Selector</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-inline" id="bombSelector">
+                    <label for="bombBullets">Number of bullets to shoot:</label>
+                    <input style="width: 5em; font-size: small" type="number" id="bombBullets" value="32">
+                    <br>
+                    <br>
+                    <label for="bombTrigger">Bomb trigger:</label>
+                    <select style="font-size: small" class="form-control" id="bombTrigger">
+                        <option value="0">Any bullet hits the bomb</option>
+                        <option value="1">One of your bullets hits the bomb</option>
+                        <option value="2">A player that is not you hits the bomb</option>
+                    </select>
+                    <br>
+                    <br>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="" id="bombInvisible">Invisible</label>
+                    </div>
+                    <hr/>
+                    <h6 id="bombCost">Bomb Cost: </h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <center>
+        <div id="loginPanel">
             <div class="panel panel-success">
                 <div class="panel-heading">
-                    <h3 class="panel-title">The Game Of Things</h3>
+                    <h3 class="panel-title big-panel-title">The Game Of Things</h3>
                 </div>
                 <div class="panel-body">
                     <input type="text" id="nameInput" class="input" style="width: 50%" placeholder="Name">
@@ -34,9 +64,10 @@
                     <button type="button" class="btn btn-primary" onclick="login()">Start</button>
                 </div>
             </div>
+            <label>Tip: Press S to toggle the bomb selector</label>
         </div>
-    </div>
-</center>
+    </center>
+</div>
 </body>
 
 </html>
