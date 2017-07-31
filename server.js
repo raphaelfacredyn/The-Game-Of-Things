@@ -1,6 +1,6 @@
 //Import server-client-commons
 var fs = require('fs');
-eval(fs.readFileSync('public/server-client-commons.js')+'');
+eval(fs.readFileSync('public/server-client-commons.js') + '');
 
 //Server Setup
 var express = require('express');
@@ -155,7 +155,7 @@ Matter.Events.on(engine, 'collisionStart', function (event) {
         for (var i = 0; i < pairs.length; i++) {
             var pair = pairs[i];
             //Check for both cases of player-bullet or bullet-player
-            if (pair.bodyA.label === 'player' && pair.bodyB.label === 'bullet') {
+            if (pair.bodyA.label === 'player' && pair.bodyB.label === 'bullet' && pair.bodyA.socketID !== pair.bodyB.socketID) {
                 //Deal the damage to the player
                 pair.bodyA.health -= bulletDamage;
                 //Remove the bullet
@@ -165,7 +165,7 @@ Matter.Events.on(engine, 'collisionStart', function (event) {
                     io.sockets.connected[pair.bodyA.socketID].disconnect(); //Disconnect on death
                 }
             }
-            if (pair.bodyA.label === 'bullet' && pair.bodyB.label === 'player') {
+            if (pair.bodyA.label === 'bullet' && pair.bodyB.label === 'player' && pair.bodyA.socketID !== pair.bodyB.socketID) {
                 Matter.World.remove(engine.world, pair.bodyA);
                 pair.bodyB.health -= bulletDamage;
                 if (pair.bodyB.health <= 0) {
@@ -192,7 +192,7 @@ Matter.Events.on(engine, 'collisionStart', function (event) {
                 switch (bomb.trigger) {
                     case 0: //Any bullet hits
                         if (other.label === 'bullet') {
-                            bulletCircle(bomb.position, bomb.angle, bomb.numOfBullets);
+                            bulletCircle(bomb.position, bomb.angle, bomb.numOfBullets, bomb.socketID);
                             Matter.World.remove(engine.world, bomb);
                             Matter.World.remove(engine.world, other)
                         }

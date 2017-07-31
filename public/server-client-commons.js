@@ -5,7 +5,7 @@ function bombCostCalc(bullets, trigger, visible) {
     }
     switch (trigger) {
         case 0: //Any bullet hits
-            cost += 1;
+            cost += 0;
             break;
         case 1: //Bullet from player
             cost += 5;
