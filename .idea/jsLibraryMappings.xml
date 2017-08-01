@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$" libraries="{Node.js Core}" />
+    <file url="file://$PROJECT_DIR$" libraries="{Node Modules}" />
+    <file url="file://$PROJECT_DIR$/public" libraries="{HTML, jQuery}" />
+    <file url="PROJECT" libraries="{HTML, Node Modules, jQuery}" />
+    <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>

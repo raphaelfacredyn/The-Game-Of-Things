@@ -7,6 +7,9 @@ var express = require('express');
 var app = express();
 var server = app.listen(8080);
 
+//PM2
+var pmx = require('pmx');
+
 //Parameters
 var worldDimensions = {
     x: 1600,
@@ -72,6 +75,63 @@ app.use(express.static('public'));
 var socket = require('socket.io');
 var io = socket(server);
 
+//PM2 Metrics
+var probe = pmx.probe();
+
+var numUsersMetric = probe.metric({
+    name: 'Number Of Users'
+});
+var numGroundBulletsMetric = probe.metric({
+    name: 'Number Of Ground Bullets'
+});
+var numBulletsMetric = probe.metric({
+    name: 'Number Of Bullets'
+});
+var numBombsMetric = probe.metric({
+    name: 'Number Of Bombs'
+});
+var numLifeBoostsMetrics = probe.metric({
+    name: 'Number Of Life Boosts'
+});
+setInterval(function () {
+    var numUsers = 0;
+    var numGroundBullets = 0;
+    var numBullets = 0;
+    var numBombs = 0;
+    var numLifeBoosts = 0;
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player') {
+            numUsers++;
+        }
+        if (engine.world.bodies[i].label === 'groundBullet') {
+            numGroundBullets++;
+        }
+        if (engine.world.bodies[i].label === 'bullet') {
+            numBullets++;
+        }
+        if (engine.world.bodies[i].label === 'bomb') {
+            numBombs++;
+        }
+        if (engine.world.bodies[i].label === 'lifeBoost') {
+            numLifeBoosts++;
+        }
+    }
+    numUsersMetric.set(numUsers);
+    numGroundBulletsMetric.set(numGroundBullets);
+    numBulletsMetric.set(numBullets);
+    numBombsMetric.set(numBombs);
+    numLifeBoostsMetrics.set(numLifeBoosts);
+}, 1000);
+
+//PM2 Actions
+pmx.action('Delete All ...', function(deleteLabel, reply) {
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'deleteLabel') {
+            Matter.World.remove(engine.world, engine.world.bodies[i])
+        }
+    }
+    reply({success : true});
+});
 
 //Send the world to the players every frame
 setInterval(function () {
