@@ -10,6 +10,12 @@ The beginnings of an io game made with socket.io and matter.js. You can try it [
     ```
 
 
+* Enter the cloned repository:
+    ```bash
+    cd The-Game-Of-Things
+    ```
+
+
 * Get all the dependencies:
     ```bash
     npm install
