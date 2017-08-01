@@ -1,15 +1,20 @@
 var fs = require('fs');
-var loginJS= "public/login.js";
-fs.readFile(loginJS, 'utf8', function (err,data) {
-    if (err) {
-        return console.log(err);
-    }
-    var result = data.replace(/raphael-macbook.local/g, process.argv[2]);
+var loginJS = "public/login.js";
+try {
+    if (process.argv[2].length > 4) {
+        fs.readFile(loginJS, 'utf8', function (err, data) {
+            if (err) {
+                return console.log(err);
+            }
+            var result = data.replace(/raphael-macbook.local/g, process.argv[2]);
 
-    fs.writeFile(loginJS, result, 'utf8', function (err) {
-        if (err) return console.log(err);
-    });
-});
+            fs.writeFile(loginJS, result, 'utf8', function (err) {
+                if (err) return console.log(err);
+            });
+        });
+    }
+} catch (e) {
+}
 
 //Import server-client-commons
 eval(fs.readFileSync('public/server-client-commons.js') + '');
