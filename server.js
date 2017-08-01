@@ -1,5 +1,17 @@
-//Import server-client-commons
 var fs = require('fs');
+var loginJS= "public/login.js";
+fs.readFile(loginJS, 'utf8', function (err,data) {
+    if (err) {
+        return console.log(err);
+    }
+    var result = data.replace(/raphael-macbook.local/g, process.argv[2]);
+
+    fs.writeFile(loginJS, result, 'utf8', function (err) {
+        if (err) return console.log(err);
+    });
+});
+
+//Import server-client-commons
 eval(fs.readFileSync('public/server-client-commons.js') + '');
 
 //Server Setup
@@ -462,7 +474,7 @@ function createBomb(position, socketID, bullets, trigger, visible) {
     bomb.trigger = trigger;
     bomb.restitution = 0.8;
     bomb.socketID = socketID;
-    Matter.World.add(engine.world, bomb)
+    Matter.World.add(engine.world, bomb);
 }
 
 function bulletCircle(position, angle, numOfBullets, socketID) {
