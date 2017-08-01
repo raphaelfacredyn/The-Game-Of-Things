@@ -1,5 +1,5 @@
 # The Game of Things
-The beginnings of an io game made with socket.io and matter.js.
+The beginnings of an io game made with socket.io and matter.js. You can try it [here](http://www.rfsite.tk:8080/).
 
 
 ### Running
