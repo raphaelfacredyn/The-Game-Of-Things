@@ -123,16 +123,6 @@ setInterval(function () {
     numLifeBoostsMetrics.set(numLifeBoosts);
 }, 1000);
 
-//PM2 Actions
-pmx.action('Delete All ...', function(deleteLabel, reply) {
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'deleteLabel') {
-            Matter.World.remove(engine.world, engine.world.bodies[i])
-        }
-    }
-    reply({success : true});
-});
-
 //Send the world to the players every frame
 setInterval(function () {
     //Update bullet life time and delete old ones
