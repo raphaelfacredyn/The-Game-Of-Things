@@ -123,6 +123,74 @@ setInterval(function () {
     numLifeBoostsMetrics.set(numLifeBoosts);
 }, 1000);
 
+//PM2 Actions
+pmx.action('Set Bullets', function (params, reply) {
+    var name = params.split(",")[0];
+    var num = parseInt(params.split(",")[1]);
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            engine.world.bodies[i].numOfBullets = num;
+        }
+    }
+    reply({success: true});
+});
+
+pmx.action('Set Health', function (params, reply) {
+    var name = params.split(",")[0];
+    var num = parseInt(params.split(",")[1]);
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            engine.world.bodies[i].health = num;
+        }
+    }
+    reply({success: true});
+});
+
+pmx.action('Set Max Health', function (params, reply) {
+    var name = params.split(",")[0];
+    var num = parseInt(params.split(",")[1]);
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            engine.world.bodies[i].maxHealth = num;
+        }
+    }
+    reply({success: true});
+});
+
+pmx.action('Set New Name', function (params, reply) {
+    var name = params.split(",")[0];
+    var newName = params.split(",")[1];
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            engine.world.bodies[i].name = newName;
+        }
+    }
+    reply({success: true});
+});
+
+pmx.action('Set Static', function (params, reply) {
+    var name = params.split(",")[0];
+    var num = parseInt(params.split(",")[1]);
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            engine.world.bodies[i].isStatic = num !== 0;
+        }
+    }
+    reply({success: true});
+});
+
+pmx.action('Kick', function (params, reply) {
+    var name = params.split(",")[0];
+    var num = parseInt(params.split(",")[1]);
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            io.sockets.connected[engine.world.bodies[i].socketID].disconnect();
+            Matter.World.remove(engine.world, engine.world.bodies[i]);
+        }
+    }
+    reply({success: true});
+});
+
 //Send the world to the players every frame
 setInterval(function () {
     //Update bullet life time and delete old ones
