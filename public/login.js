@@ -2,7 +2,7 @@
 window.onbeforeunload = function() {
     localStorage.setItem("name", $('#nameInput').val());
 };
-        
+
 $(document).ready(function() {
     //Restore Username
     var name = localStorage.getItem("name");
@@ -27,7 +27,7 @@ function login() {
     name=$('#nameInput').val();
 
     //connect to the server
-    socket = io.connect('raphael-macbook.local:8080');
+    socket = io.connect('rp-local:8080');
 
     //send the username
     socket.emit('name', name);
