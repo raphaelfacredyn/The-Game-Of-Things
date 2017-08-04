@@ -1,3 +1,11 @@
+//Names of the skins
+var numOfSkins = 43;
+var playerImageOptions = [];
+for(var i=1;i<=numOfSkins;i++){
+    playerImageOptions.push('faces/skin-'+i+'.jpg');
+}
+var playerImages = [];
+
 function bombCostCalc(bullets, trigger, visible) {
     var cost = bullets;
     if (!visible) {

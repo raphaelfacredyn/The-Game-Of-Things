@@ -19,13 +19,11 @@ try {
 //Import server-client-commons
 eval(fs.readFileSync('public/server-client-commons.js') + '');
 
+
 //Server Setup
 var express = require('express');
 var app = express();
 var server = app.listen(8080);
-
-//PM2
-var pmx = require('pmx');
 
 //Parameters
 var worldDimensions = {
@@ -49,7 +47,6 @@ var bulletLifeTime = 8;
 var timeBetweenRegenerations = 100;
 var regenerateAmount = 0.3;
 var playerCollisionDamage = bulletDamage;
-var numOfColors = 6;
 
 //Import matter-js (physics engine)
 var Matter = require('matter-js');
@@ -91,122 +88,6 @@ app.use(express.static('public'));
 //Socket.io (live communication engine) setup
 var socket = require('socket.io');
 var io = socket(server);
-
-//PM2 Metrics
-var probe = pmx.probe();
-
-var numUsersMetric = probe.metric({
-    name: 'Number Of Users'
-});
-var numGroundBulletsMetric = probe.metric({
-    name: 'Number Of Ground Bullets'
-});
-var numBulletsMetric = probe.metric({
-    name: 'Number Of Bullets'
-});
-var numBombsMetric = probe.metric({
-    name: 'Number Of Bombs'
-});
-var numLifeBoostsMetrics = probe.metric({
-    name: 'Number Of Life Boosts'
-});
-setInterval(function () {
-    var numUsers = 0;
-    var numGroundBullets = 0;
-    var numBullets = 0;
-    var numBombs = 0;
-    var numLifeBoosts = 0;
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player') {
-            numUsers++;
-        }
-        if (engine.world.bodies[i].label === 'groundBullet') {
-            numGroundBullets++;
-        }
-        if (engine.world.bodies[i].label === 'bullet') {
-            numBullets++;
-        }
-        if (engine.world.bodies[i].label === 'bomb') {
-            numBombs++;
-        }
-        if (engine.world.bodies[i].label === 'lifeBoost') {
-            numLifeBoosts++;
-        }
-    }
-    numUsersMetric.set(numUsers);
-    numGroundBulletsMetric.set(numGroundBullets);
-    numBulletsMetric.set(numBullets);
-    numBombsMetric.set(numBombs);
-    numLifeBoostsMetrics.set(numLifeBoosts);
-}, 1000);
-
-//PM2 Actions
-pmx.action('Set Bullets', function (params, reply) {
-    var name = params.split(",")[0];
-    var num = parseInt(params.split(",")[1]);
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-            engine.world.bodies[i].numOfBullets = num;
-        }
-    }
-    reply({success: true});
-});
-
-pmx.action('Set Health', function (params, reply) {
-    var name = params.split(",")[0];
-    var num = parseInt(params.split(",")[1]);
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-            engine.world.bodies[i].health = num;
-        }
-    }
-    reply({success: true});
-});
-
-pmx.action('Set Max Health', function (params, reply) {
-    var name = params.split(",")[0];
-    var num = parseInt(params.split(",")[1]);
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-            engine.world.bodies[i].maxHealth = num;
-        }
-    }
-    reply({success: true});
-});
-
-pmx.action('Set New Name', function (params, reply) {
-    var name = params.split(",")[0];
-    var newName = params.split(",")[1];
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-            engine.world.bodies[i].name = newName;
-        }
-    }
-    reply({success: true});
-});
-
-pmx.action('Set Static', function (params, reply) {
-    var name = params.split(",")[0];
-    var num = parseInt(params.split(",")[1]);
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-            engine.world.bodies[i].isStatic = num !== 0;
-        }
-    }
-    reply({success: true});
-});
-
-pmx.action('Kick', function (params, reply) {
-    var name = params.split(",")[0];
-    var num = parseInt(params.split(",")[1]);
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-            io.sockets.connected[engine.world.bodies[i].socketID].disconnect();
-            Matter.World.remove(engine.world, engine.world.bodies[i]);
-        }
-    }
-    reply({success: true});
-});
 
 //Send the world to the players every frame
 setInterval(function () {
@@ -534,7 +415,7 @@ function newConnection(socket) {
     player.socketID = socket.id;
     player.name = 'Unnamed';
     player.numOfBullets = 0;
-    player.skinID = random(numOfColors) - 1;
+    player.skinID = random(numOfSkins) - 1;
     player.health = startingHealth;
     player.maxHealth = player.health;
     player.restitution = 0.8;
@@ -634,3 +515,65 @@ function simplifyBodies(bodies) {
     }
     return newBodies;
 }
+
+//PM2
+var pmx = require('pmx');
+var probe = pmx.probe();
+
+var numUsersMetric = probe.metric({
+    name: 'Number Of Users'
+});
+var numGroundBulletsMetric = probe.metric({
+    name: 'Number Of Ground Bullets'
+});
+var numBulletsMetric = probe.metric({
+    name: 'Number Of Bullets'
+});
+var numBombsMetric = probe.metric({
+    name: 'Number Of Bombs'
+});
+var numLifeBoostsMetrics = probe.metric({
+    name: 'Number Of Life Boosts'
+});
+setInterval(function () {
+    var numUsers = 0;
+    var numGroundBullets = 0;
+    var numBullets = 0;
+    var numBombs = 0;
+    var numLifeBoosts = 0;
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player') {
+            numUsers++;
+        }
+        if (engine.world.bodies[i].label === 'groundBullet') {
+            numGroundBullets++;
+        }
+        if (engine.world.bodies[i].label === 'bullet') {
+            numBullets++;
+        }
+        if (engine.world.bodies[i].label === 'bomb') {
+            numBombs++;
+        }
+        if (engine.world.bodies[i].label === 'lifeBoost') {
+            numLifeBoosts++;
+        }
+    }
+    numUsersMetric.set(numUsers);
+    numGroundBulletsMetric.set(numGroundBullets);
+    numBulletsMetric.set(numBullets);
+    numBombsMetric.set(numBombs);
+    numLifeBoostsMetrics.set(numLifeBoosts);
+}, 1000);
+
+//PM2 Actions
+pmx.action('Set Bullets', function (params, reply) {
+    console.log(params);
+    var name = params.split(",")[0];
+    var num = parseInt(params.split(",")[1]);
+    for (var i = 0; i < engine.world.bodies.length; i++) {
+        if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
+            engine.world.bodies[i].numOfBullets = num;
+        }
+    }
+    reply({success: true});
+});

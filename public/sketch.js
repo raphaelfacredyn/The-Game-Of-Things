@@ -10,8 +10,6 @@ var heading; // direction of player
 
 var nameSize = 18; // size of the name label
 
-var playerImages = []; // will contain all the player skins
-
 //Variable is set by server later on
 var worldDimensions = {
     x: 1,
@@ -23,11 +21,8 @@ var inPlay = false; //whether you have started playing
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    //Names of the skins
-    var playerImageOptions = ['Blue.png', 'Green.png', 'Orange.png', 'Purple.png', 'Red.png', 'Turq.png'];
-
     //Load the skins into the array
-    for (path in playerImageOptions) {
+    for (var path in playerImageOptions) {
         playerImages.push(loadImage("sprites/players/" + playerImageOptions[path]))
     }
 
