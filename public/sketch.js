@@ -46,8 +46,8 @@ function iDied() {
 
 //draw the grid background
 function drawGrid(sqrWidth, border) {
-    stroke(8);
-    fill(30);
+    strokeWeight(border);
+    stroke(25);
     for (x = 0; x < worldDimensions.x - 1; x += (sqrWidth + border)) {
         line(x,0,x,worldDimensions.y);
     }
@@ -58,7 +58,7 @@ function drawGrid(sqrWidth, border) {
 
 //Display the world
 function worldUpdate(bodies) {
-    background(25);
+    background(30);
 
     //translate to the players location
     translate(-position.x + width / 2, -position.y + height / 2);
