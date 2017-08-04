@@ -2,7 +2,7 @@
 window.onbeforeunload = function() {
     localStorage.setItem("name", $('#nameInput').val());
 };
-        
+
 $(document).ready(function() {
     //Restore Username
     var name = localStorage.getItem("name");

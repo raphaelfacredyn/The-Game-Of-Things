@@ -46,18 +46,19 @@ function iDied() {
 
 //draw the grid background
 function drawGrid(sqrWidth, border) {
-    noStroke();
-    fill(30);
+    strokeWeight(border);
+    stroke(25);
     for (x = 0; x < worldDimensions.x - 1; x += (sqrWidth + border)) {
-        for (y = 0; y < worldDimensions.y - 1; y += (sqrWidth + border)) {
-            rect(x, y, sqrWidth, sqrWidth)
-        }
+        line(x,0,x,worldDimensions.y);
+    }
+    for (y = 0; y < worldDimensions.y - 1; y += (sqrWidth + border)) {
+        line(0, y, worldDimensions.x, y);
     }
 }
 
 //Display the world
 function worldUpdate(bodies) {
-    background(25);
+    background(30);
 
     //translate to the players location
     translate(-position.x + width / 2, -position.y + height / 2);
