@@ -44,7 +44,7 @@ function drawGrid(sqrWidth, border) {
     strokeWeight(border);
     stroke(25);
     for (x = 0; x < worldDimensions.x - 1; x += (sqrWidth + border)) {
-        line(x,0,x,worldDimensions.y);
+        line(x, 0, x, worldDimensions.y);
     }
     for (y = 0; y < worldDimensions.y - 1; y += (sqrWidth + border)) {
         line(0, y, worldDimensions.x, y);
@@ -80,12 +80,9 @@ function displayBodies(bodies) {
             var bodyColor = color(body.render.fillStyle);
             fill(color(255 - red(bodyColor), 255 - green(bodyColor), 255 - blue(bodyColor)));
             textSize(nameSize);
-            if (body.socketID === socket.id) {
-                position = body.position;
-                text(body.numOfBullets, body.position.x - textWidth(body.numOfBullets) / 2, body.position.y - 60)
-            } else {
-                text(body.name, body.position.x - textWidth(body.name) / 2, body.position.y)
-            }
+            position = body.position;
+            text(body.numOfBullets, body.position.x - textWidth(body.numOfBullets) / 2, body.position.y - 60)
+            text(body.name, body.position.x - textWidth(body.name) / 2, body.position.y)
 
             //Draw the health bar
             var barSize = body.maxHealth / 2;
@@ -116,6 +113,16 @@ function draw() {
         };
         heading = getUnitVector(heading);
         socket.emit('heading', heading)
+    } else {
+        var padding = 0;
+        var imageSize = (width - padding * (playerImages.length - 1)) / playerImages.length;
+        for (var i = 0; i < playerImages.length; i++) {
+            push();
+            translate(i * (imageSize + padding) + imageSize / 2, imageSize / 2);
+            rotate(Math.PI / 2);
+            image(playerImages[i], 0, 0, imageSize, imageSize);
+            pop();
+        }
     }
 }
 

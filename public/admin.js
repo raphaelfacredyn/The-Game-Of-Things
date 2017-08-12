@@ -2,7 +2,7 @@ function sendRequest(location, data, type) {
     var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "http://raphael-macbook.local:8080/" + location,
+        "url": window.location.protocol+"/" + location,
         "method": type,
         "headers": {
             "content-type": "application/json",
@@ -77,10 +77,15 @@ function setName(name, newName) {
 }
 
 function setStatic(name, amount) {
+    if (amount){
+        amount=1;
+    }else{
+        amount=0;
+    }
     sendRequest("setStatic", JSON.stringify(
         {
             "name": name,
-            "amount": parseInt(amount)
+            "amount": amount
         }
     ), "POST");
 }
