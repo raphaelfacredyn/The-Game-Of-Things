@@ -517,7 +517,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } catch (e) {
 	        cachedClearTimeout = defaultClearTimeout;
 	    }
-	} ())
+	} ());
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
 	        //normal enviroments in sane situations
@@ -877,11 +877,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Helpers.
 	 */
 
-	var s = 1000
-	var m = s * 60
-	var h = m * 60
-	var d = h * 24
-	var y = d * 365.25
+	var s = 1000;
+	var m = s * 60;
+	var h = m * 60;
+	var d = h * 24;
+	var y = d * 365.25;
 
 	/**
 	 * Parse or format the given `val`.
@@ -898,8 +898,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	module.exports = function (val, options) {
-	  options = options || {}
-	  var type = typeof val
+	  options = options || {};
+	  var type = typeof val;
 	  if (type === 'string' && val.length > 0) {
 	    return parse(val)
 	  } else if (type === 'number' && isNaN(val) === false) {
@@ -908,7 +908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				fmtShort(val)
 	  }
 	  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
-	}
+	};
 
 	/**
 	 * Parse the given `str` and return milliseconds.
@@ -919,51 +919,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	function parse(str) {
-	  str = String(str)
+	  str = String(str);
 	  if (str.length > 10000) {
 	    return
 	  }
-	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
+	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
 	  if (!match) {
 	    return
 	  }
-	  var n = parseFloat(match[1])
-	  var type = (match[2] || 'ms').toLowerCase()
+	  var n = parseFloat(match[1]);
+	  var type = (match[2] || 'ms').toLowerCase();
 	  switch (type) {
 	    case 'years':
 	    case 'year':
 	    case 'yrs':
 	    case 'yr':
 	    case 'y':
-	      return n * y
+	      return n * y;
 	    case 'days':
 	    case 'day':
 	    case 'd':
-	      return n * d
+	      return n * d;
 	    case 'hours':
 	    case 'hour':
 	    case 'hrs':
 	    case 'hr':
 	    case 'h':
-	      return n * h
+	      return n * h;
 	    case 'minutes':
 	    case 'minute':
 	    case 'mins':
 	    case 'min':
 	    case 'm':
-	      return n * m
+	      return n * m;
 	    case 'seconds':
 	    case 'second':
 	    case 'secs':
 	    case 'sec':
 	    case 's':
-	      return n * s
+	      return n * s;
 	    case 'milliseconds':
 	    case 'millisecond':
 	    case 'msecs':
 	    case 'msec':
 	    case 'ms':
-	      return n
+	      return n;
 	    default:
 	      return undefined
 	  }
@@ -1365,10 +1365,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } catch(e){
 	    return error();
 	  }
-	  return p; 
-	};
+	  return p;
 
-	/**
+}
+        /**
 	 * Deallocates a parser's resources
 	 *
 	 * @api public
@@ -1950,8 +1950,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var define = false;
 
 	/*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
-	;(function () {
-	  // Detect the `define` function exposed by asynchronous module loaders. The
+            (function () {
+                // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
 	  var isLoader = typeof define === "function" && define.amd;
 
@@ -2047,8 +2047,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                stringify(0) === "0" &&
 	                // FF 3.1b1, b2, and JSON 2 serialize wrapped primitives as object
 	                // literals.
-	                stringify(new Number()) === "0" &&
-	                stringify(new String()) == '""' &&
+	                stringify(Number()) === "0" &&
+	                stringify(String()) == '""' &&
 	                // FF 3.1b1, 2 throw an error if the value is `null`, `undefined`, or
 	                // does not define a canonical JSON representation (this applies to
 	                // objects with `toJSON` properties as well, *unless* they are nested
@@ -2890,9 +2890,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function Emitter(obj) {
 	  if (obj) return mixin(obj);
-	};
-
-	/**
+    }
+        /**
 	 * Mixin the emitter properties.
 	 *
 	 * @param {Object} obj
@@ -6272,25 +6271,25 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = after
+	module.exports = after;
 
 	function after(count, callback, err_cb) {
-	    var bail = false
-	    err_cb = err_cb || noop
-	    proxy.count = count
+	    var bail = false;
+	    err_cb = err_cb || noop;
+	    proxy.count = count;
 
-	    return (count === 0) ? callback() : proxy
+	    return (count === 0) ? callback() : proxy;
 
 	    function proxy(err, result) {
 	        if (proxy.count <= 0) {
 	            throw new Error('after called too many times')
 	        }
-	        --proxy.count
+	        --proxy.count;
 
 	        // after first error, rest are passed to err_cb
 	        if (err) {
-	            bail = true
-	            callback(err)
+	            bail = true;
+	            callback(err);
 	            // future error callbacks will go to error handler
 	            callback = err_cb
 	        } else if (proxy.count === 0 && !bail) {
@@ -6307,9 +6306,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/wtf8 v1.0.0 by @mathias */
-	;(function(root) {
+            (function (root) {
 
-		// Detect free variables `exports`
+                // Detect free variables `exports`
 		var freeExports = typeof exports == 'object' && exports;
 
 		// Detect free variable `module`
@@ -6698,14 +6697,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
-	};
-
-	function BlobConstructor(ary, options) {
+    }
+            function BlobConstructor(ary, options) {
 	  mapArrayBufferViews(ary);
 	  return new Blob(ary, options || {});
-	};
-
-	module.exports = (function() {
+    }
+            module.exports = (function() {
 	  if (blobSupported) {
 	    return blobSupportsArrayBufferView ? global.Blob : BlobConstructor;
 	  } else if (blobBuilderSupported) {
@@ -6738,9 +6735,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function Emitter(obj) {
 	  if (obj) return mixin(obj);
-	};
-
-	/**
+    }
+        /**
 	 * Mixin the emitter properties.
 	 *
 	 * @param {Object} obj
@@ -8029,12 +8025,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 45 */
 /***/ function(module, exports) {
 
-	module.exports = toArray
+	module.exports = toArray;
 
 	function toArray(list, index) {
-	    var array = []
+	    var array = [];
 
-	    index = index || 0
+	    index = index || 0;
 
 	    for (var i = index || 0; i < list.length; i++) {
 	        array[i - index] = list[i]
@@ -8197,5 +8193,4 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ }
 /******/ ])
 });
-;
 //# sourceMappingURL=socket.io.js.map

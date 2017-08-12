@@ -9,6 +9,7 @@
   "author": "Raphael Facredyn",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.2",
     "matter-js": "^0.12.0",
     "pmx": "^1.2.0",

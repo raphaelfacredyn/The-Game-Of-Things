@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+
+    <script src="libraries/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.paper.theme.css">
+
+    <script src="libraries/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/admin.css">
+
+    <script src="admin.js"></script>
+</head>
+<body style="padding: 10px">
+<center>
+    <div style="width: 50%">
+        <h3>Login</h3>
+        <div class="form-group">
+            <label for="inputUsername" class="col-lg-2 control-label lb-md">Username</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" id="inputUsername" placeholder="Username">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword" class="col-lg-2 control-label lb-md">Password</label>
+            <div class="col-lg-10">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <hr/>
+    <h3>Stats</h3>
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Stats</h3>
+        </div>
+        <div class="panel-body">
+            <div id="getStatsOutputDiv"></div>
+        </div>
+    </div>
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Users</h3>
+        </div>
+        <div class="panel-body">
+            <div id="getUsersOutputDiv"></div>
+        </div>
+    </div>
+    <hr/>
+    <h3>Actions</h3>
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Set Bullets</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="setBulletsName" placeholder="Player Name">
+            </div>
+            <div class="form-group">
+                <input type="number" class="form-control" id="setBulletsAmount" placeholder="Amount">
+            </div>
+            <button class="btn btn-default"
+                    onclick="setBullets($('#setBulletsName').val(), $('#setBulletsAmount').val())">Send
+            </button>
+            <p>Output:</p>
+            <div id="setBulletsOutputDiv"></div>
+        </div>
+    </div>
+
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Set Health</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="setHealthName" placeholder="Player Name">
+            </div>
+            <div class="form-group">
+                <input type="number" class="form-control" id="setHealthAmount" placeholder="Amount">
+            </div>
+            <button class="btn btn-default" onclick="setHealth($('#setHealthName').val(), $('#setHealthAmount').val())">
+                Send
+            </button>
+            <p>Output:</p>
+            <div id="setHealthOutputDiv"></div>
+        </div>
+    </div>
+
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Set Max Health</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="setMaxHealthName" placeholder="Player Name">
+            </div>
+            <div class="form-group">
+                <input type="number" class="form-control" id="setMaxHealthAmount" placeholder="Amount">
+            </div>
+            <button class="btn btn-default"
+                    onclick="setMaxHealth($('#setMaxHealthName').val(), $('#setMaxHealthAmount').val())">Send
+            </button>
+            <p>Output:</p>
+            <div id="setMaxHealthOutputDiv"></div>
+        </div>
+    </div>
+
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Set Name</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="setNameName" placeholder="Player Name">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="setNameNewName" placeholder="New Name">
+            </div>
+            <button class="btn btn-default" onclick="setName($('#setNameName').val(), $('#setNameNewName').val())">
+                Send
+            </button>
+            <p>Output:</p>
+            <div id="setNameOutputDiv"></div>
+        </div>
+    </div>
+
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Set Static</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="setStaticName" placeholder="Player Name">
+            </div>
+            <div class="form-group">
+                <input type="number" class="form-control" id="setStaticAmount" placeholder="1 for static, 0 for moving">
+            </div>
+            <button class="btn btn-default" onclick="setStatic($('#setStaticName').val(),$('#setStaticAmount').val())">
+                Send
+            </button>
+            <p>Output:</p>
+            <div id="setStaticOutputDiv"></div>
+        </div>
+    </div>
+
+    <div class="panel panel-success" style="width: 50%">
+        <div class="panel-heading">
+            <h3 class="panel-title">Kick</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="kickName" placeholder="Player Name">
+            </div>
+            <button class="btn btn-default" onclick="kick($('#kickName').val())">Send</button>
+            <p>Output:</p>
+            <div id="kickOutputDiv"></div>
+        </div>
+    </div>
+</center>
+</body>
+</html>

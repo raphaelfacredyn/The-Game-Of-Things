@@ -1,8 +1,8 @@
 //Names of the skins
-var numOfSkins = 43;
+var numOfSkins = 25;
 var playerImageOptions = [];
 for(var i=1;i<=numOfSkins;i++){
-    playerImageOptions.push('faces/skin-'+i+'.jpg');
+    playerImageOptions.push('faces/skin-'+i+'.png');
 }
 var playerImages = [];
 

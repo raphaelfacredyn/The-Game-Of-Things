@@ -145,7 +145,7 @@ function keyReleased() {
         } catch (e) {
         }
     }
-    if (key === 'S') {
+    if (key === 'S' && inPlay) {
         toggleBombSelector();
     }
 }
