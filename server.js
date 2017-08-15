@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-var password="Basic dXNlcjpwYXNz";
+var password = "Basic dXNlcjpwYXNz";
 
 //Parameters
 var worldDimensions = {
@@ -90,6 +90,10 @@ for (var i = 0; i < engine.world.bodies.length; i++) {
     engine.world.bodies[i].render.fillStyle = '#ffffff'
 }
 
+//Add Ground Bullets and Life Boosts
+createGroundBullets();
+createLifeBoosts();
+
 //Server setup
 app.use(express.static('public'));
 
@@ -132,10 +136,10 @@ Matter.Events.on(engine, 'collisionStart', function (event) {
                 //Give the player a bullet
                 pair.bodyA.numOfBullets++;
                 //Remove the ground bullet
-                Matter.World.remove(engine.world, pair.bodyB)
+                Matter.Body.setPosition(pair.bodyB, randomPosition(100));
             }
             if (pair.bodyA.label === 'groundBullet' && pair.bodyB.label === 'player') {
-                Matter.World.remove(engine.world, pair.bodyA);
+                Matter.Body.setPosition(pair.bodyA, randomPosition(100));
                 pair.bodyB.numOfBullets++;
             }
         }
@@ -158,10 +162,10 @@ Matter.Events.on(engine, 'collisionStart', function (event) {
                 //Increase the player's health by the same amount
                 pair.bodyA.health += lifeBoostGain;
                 //Remove the life boost
-                Matter.World.remove(engine.world, pair.bodyB)
+                Matter.Body.setPosition(pair.bodyB, randomPosition(100));
             }
             if (pair.bodyA.label === 'lifeBoost' && pair.bodyB.label === 'player') {
-                Matter.World.remove(engine.world, pair.bodyA);
+                Matter.Body.setPosition(pair.bodyA, randomPosition(100));
                 pair.bodyB.maxHealth += lifeBoostGain;
                 pair.bodyB.health += lifeBoostGain;
             }
@@ -307,65 +311,42 @@ setInterval(function () {
 
 // Reset ground bullets and life boosts periodically
 setInterval(function () {
-    removeAllGroundBullets();
-    removeAllLifeBoosts();
-    createGroundBullets();
-    createLifeBoosts()
-}, 5000);
+    checkForEscapedObjects();
+}, 500);
 
-function removeAllGroundBullets() {
-    //Loop through all the bodies in the world
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        var body = engine.world.bodies[i];
-        //If the body is a ground bullet then remove it
-        if (body.label === "groundBullet") {
-            Matter.World.remove(engine.world, body)
+function checkForEscapedObjects() {
+    try {
+        for (var i = 0; i < engine.world.bodies.length; i++) {
+            if ((engine.world.bodies[i].position.x < 0 || engine.world.bodies[i].position.x > worldDimensions.x || engine.world.bodies[i].position.y < 0 || engine.world.bodies[i].position.y > worldDimensions.y) && engine.world.bodies[i].label !== "wall") {
+                if (engine.world.bodies[i].label !== "bullet" && engine.world.bodies[i].label !== "bomb") {
+                    Matter.Body.setPosition(engine.world.bodies[i], randomPosition(100));
+                }
+                if (engine.world.bodies[i].label === "bullet") {
+                    Matter.World.remove(engine.world, engine.world.bodies[i]);
+                }
+                if (engine.world.bodies[i].label === "bomb") {
+                    Matter.Body.setVelocity(engine.world.bodies[i], {'x': 0, 'y': 0});
+                }
+            }
         }
+    } catch (e) {
     }
 }
 
-function createGroundBullets() {
-    //Create the specified number of ground bullets
-    for (var i = 0; i < numOfGroundBullets; i++) {
-        //Create the bullet at a random position with the specified ground bullet size
-        var groundBullet = Matter.Bodies.rectangle(random(worldDimensions.x), random(worldDimensions.y), groundBulletSize, groundBulletSize);
-        //Rotate it by a random amount
-        Matter.Body.rotate(groundBullet, Math.random() * 2 * Math.PI);
-        //Name it groundBullet
-        groundBullet.label = "groundBullet";
-        //Make it bouncy
-        groundBullet.restitution = 0.8;
-        //Add it to the world
-        Matter.World.add(engine.world, groundBullet)
-    }
-}
-
-function removeAllLifeBoosts() {
-    for (var i = 0; i < engine.world.bodies.length; i++) {
-        var body = engine.world.bodies[i];
-        if (body.label === "lifeBoost") {
-            Matter.World.remove(engine.world, body)
-        }
-    }
-}
-
-function createLifeBoosts() {
-    for (var i = 0; i < numOfLifeBoosts; i++) {
-        //Create the life boost based off of the vertices
-        var lifeBoost = Matter.Bodies.fromVertices(random(worldDimensions.x), random(worldDimensions.y), Matter.Vertices.fromPath("0 -4 4 -8 8 -8 12 -4 12 0 0 16 -12 0 -12 -4 -8 -8 -4 -8 0 -4"));
-        Matter.Body.rotate(lifeBoost, Math.random() * 2 * Math.PI);
-        lifeBoost.label = "lifeBoost";
-        lifeBoost.restitution = 0.8;
-        Matter.World.add(engine.world, lifeBoost)
-    }
-}
-
-function createBomb(position, socketID, bullets, trigger, visible) {
-    var bomb = Matter.Bodies.fromVertices(position.x, position.y, Matter.Vertices.fromPath("-20 30 0 30 10 20 10 0 0 -10 -20 -10 -30 0 -30 20 -20 30"));
+function createBomb(position, socketID, bullets, trigger, visible, angle) {
+    var bombHeading = {
+        x: Math.cos(angle),
+        y: Math.sin(angle)
+    };
+    //Make sure the vector is a unit vector
+    bombHeading = getUnitVector(bombHeading);
+    
+    var bomb = Matter.Bodies.fromVertices(position.x - bombHeading.x * defaultPlayerSize/4, position.y - bombHeading.y * defaultPlayerSize/4, Matter.Vertices.fromPath("-20 30 0 30 10 20 10 0 0 -10 -20 -10 -30 0 -30 20 -20 30"));
     bomb.label = "bomb";
     bomb.visible = visible;
     bomb.numOfBullets = bullets;
     bomb.trigger = trigger;
+    bomb.angle = angle;
     bomb.restitution = 0.8;
     bomb.socketID = socketID;
     Matter.World.add(engine.world, bomb);
@@ -469,7 +450,7 @@ function newConnection(socket) {
     socket.on('newBomb', function (bullets, trigger, visible) {
         var cost = bombCostCalc(bullets, trigger, visible);
         if (player.numOfBullets >= cost) {
-            createBomb(player.position, player.socketID, bullets, trigger, visible);
+            createBomb(player.position, player.socketID, bullets, trigger, visible, player.angle);
             player.numOfBullets -= cost;
         }
     });
@@ -522,6 +503,40 @@ function simplifyBodies(bodies) {
         }
     }
     return newBodies;
+}
+
+function randomPosition(padding) {
+    var position = {'x': 0, 'y': 0};
+    position.x = random(worldDimensions.x - padding * 2) + padding;
+    position.y = random(worldDimensions.y - padding * 2) + padding;
+    return position;
+}
+
+function createGroundBullets() {
+    //Create the specified number of ground bullets
+    for (var i = 0; i < numOfGroundBullets; i++) {
+        //Create the bullet at a random position with the specified ground bullet size
+        var groundBullet = Matter.Bodies.rectangle(random(worldDimensions.x), random(worldDimensions.y), groundBulletSize, groundBulletSize);
+        //Rotate it by a random amount
+        Matter.Body.rotate(groundBullet, Math.random() * 2 * Math.PI);
+        //Name it groundBullet
+        groundBullet.label = "groundBullet";
+        //Make it bouncy
+        groundBullet.restitution = 0.8;
+        //Add it to the world
+        Matter.World.add(engine.world, groundBullet)
+    }
+}
+
+function createLifeBoosts() {
+    for (var i = 0; i < numOfLifeBoosts; i++) {
+        //Create the life boost based off of the vertices
+        var lifeBoost = Matter.Bodies.fromVertices(random(worldDimensions.x), random(worldDimensions.y), Matter.Vertices.fromPath("0 -4 4 -8 8 -8 12 -4 12 0 0 16 -12 0 -12 -4 -8 -8 -4 -8 0 -4"));
+        Matter.Body.rotate(lifeBoost, Math.random() * 2 * Math.PI);
+        lifeBoost.label = "lifeBoost";
+        lifeBoost.restitution = 0.8;
+        Matter.World.add(engine.world, lifeBoost)
+    }
 }
 
 //API
