@@ -36,8 +36,7 @@ The beginnings of an io game made with socket.io and matter.js. You can try it [
     ```bash
     node server.js
     ```
-    >Note: The program will print "matter-js: Bodies.fromVertices: poly-decomp.js required. Could not decompose vertices. Fallback to convex hull." every 5 seconds because the hearts are concave shapes but the library to deal with them is missing. It seems to me that this library only works on the web with node.js, your help would be greatly appreciated.
 
 
 * Now simply go to http://localhost:8080/ or http://127.0.0.1:8080/ or http://your-local-ip:8080/ and enjoy. The last option can be sent to other computers on the same network so that they can play with you
-    >Note: this server is in no way secure so please so do not run it on a public ip as it will most likely be hacked
+    >Note: this server is in no way secure so please do not run it on a public ip as it will most likely be hacked as well as the computer it is running on 

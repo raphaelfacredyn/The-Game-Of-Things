@@ -18,6 +18,10 @@ var worldDimensions = {
 
 var inPlay = false; //whether you have started playing
 
+var currFrameNum = 0;
+
+var prevTimeOfFrame = 0;
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
@@ -43,10 +47,10 @@ function iDied() {
 function drawGrid(sqrWidth, border) {
     strokeWeight(border);
     stroke(25);
-    for (x = 0; x < worldDimensions.x - 1; x += (sqrWidth + border)) {
+    for (var x = 0; x < worldDimensions.x - 1; x += (sqrWidth + border)) {
         line(x, 0, x, worldDimensions.y);
     }
-    for (y = 0; y < worldDimensions.y - 1; y += (sqrWidth + border)) {
+    for (var y = 0; y < worldDimensions.y - 1; y += (sqrWidth + border)) {
         line(0, y, worldDimensions.x, y);
     }
 }
@@ -54,16 +58,24 @@ function drawGrid(sqrWidth, border) {
 //Display the world
 function worldUpdate(bodies) {
     background(30);
-
-    //translate to the players location
-    translate(-position.x + width / 2, -position.y + height / 2);
-
-    drawGrid(60, 20);
-
     displayBodies(bodies);
 }
 
 function displayBodies(bodies) {
+    for (var i = 0; i < bodies.length; i++) {
+        var body = bodies[i];
+        //Check if the body is a player
+        if (body.label === 'player') {
+            //Draw the player image
+            if (body.socketID === socket.id) {
+                translate(-body.position.x + width / 2, -body.position.y + height / 2);
+                break;
+            }
+        }
+    }
+
+    drawGrid(60, 20);
+
     //Loop through all the bodies in the world
     for (var i = 0; i < bodies.length; i++) {
         var body = bodies[i];
@@ -80,7 +92,6 @@ function displayBodies(bodies) {
             var bodyColor = color(body.render.fillStyle);
             fill(color(255 - red(bodyColor), 255 - green(bodyColor), 255 - blue(bodyColor)));
             textSize(nameSize);
-            position = body.position;
             text(body.numOfBullets, body.position.x - textWidth(body.numOfBullets) / 2, body.position.y - 60)
             text(body.name, body.position.x - textWidth(body.name) / 2, body.position.y)
 
@@ -95,12 +106,24 @@ function displayBodies(bodies) {
             strokeWeight(body.render.lineWidth);
             fill(body.render.fillStyle);
             stroke(body.render.strokeStyle);
+
+            var vertices;
+            push();
+            if (typeof(body.vertices) === 'string') {
+                translate(body.position.x, body.position.y);
+                rotate(body.angle);
+                vertices = objectVertices[body.vertices];
+            } else {
+                vertices = body.vertices
+            }
+
             beginShape();
-            for (var j = 0; j < body.vertices.length; j++) {
-                var v = body.vertices[j];
-                vertex(v.x, v.y)
+            for (var j = 0; j < vertices.length; j++) {
+                var v = vertices[j];
+                vertex(v.x, v.y);
             }
             endShape(CLOSE);
+            pop();
         }
     }
 }

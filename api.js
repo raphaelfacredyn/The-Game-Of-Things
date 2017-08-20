@@ -115,7 +115,7 @@ app.post('/setStatic', function (req, res) {
             var foundUser = false;
             for (var i = 0; i < engine.world.bodies.length; i++) {
                 if (engine.world.bodies[i].label === 'player' && engine.world.bodies[i].name === name) {
-                    engine.world.bodies[i].isStatic = num !== 0;
+                    Matter.Body.setStatic(engine.world.bodies[i], num !== 0);
                     foundUser = true;
                 }
             }
@@ -254,7 +254,7 @@ function getUsersTable() {
             table += row;
         }
     }
-    table+='</tbody>\n' +
+    table += '</tbody>\n' +
         '</table>';
     return table;
 }
