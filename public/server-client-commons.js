@@ -1,10 +1,18 @@
 //Names of the skins
 var numOfSkins = 25;
+
+//Load Player Images
 var playerImageOptions = [];
-for(var i=1;i<=numOfSkins;i++){
-    playerImageOptions.push('faces/skin-'+i+'.png');
+for (var i = 1; i <= numOfSkins; i++) {
+    playerImageOptions.push('faces/skin-' + i + '.png');
 }
 var playerImages = [];
+
+//Object Vertices
+var groundBulletSize=3;
+var objectVertices = {
+    'groundBullet': [{x: -groundBulletSize, y: -groundBulletSize}, {x: -groundBulletSize, y: groundBulletSize}, {x: groundBulletSize, y: groundBulletSize}, {x: groundBulletSize, y: -groundBulletSize}]
+};
 
 function bombCostCalc(bullets, trigger, visible) {
     var cost = bullets;
