@@ -1,4 +1,6 @@
 # The Game of Things
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fraphy1234%2FThe-Game-Of-Things.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fraphy1234%2FThe-Game-Of-Things?ref=badge_shield)
+
 The beginnings of an io game made with socket.io and matter.js. You can try it [here](http://www.rfsite.tk:8080/).
 
 
@@ -40,3 +42,7 @@ The beginnings of an io game made with socket.io and matter.js. You can try it [
 
 * Now simply go to http://localhost:8080/ or http://127.0.0.1:8080/ or http://your-local-ip:8080/ and enjoy. The last option can be sent to other computers on the same network so that they can play with you
     >Note: this server is in no way secure so please do not run it on a public ip as it will most likely be hacked as well as the computer it is running on 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fraphy1234%2FThe-Game-Of-Things.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fraphy1234%2FThe-Game-Of-Things?ref=badge_large)
