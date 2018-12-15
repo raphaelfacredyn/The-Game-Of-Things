@@ -27,7 +27,7 @@ function login() {
     name=$('#nameInput').val();
 
     //connect to the server
-    socket = io.connect('raphael-macbook.local:8080');
+    socket = io();
 
     //send the username
     socket.emit('name', name);

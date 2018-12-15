@@ -22,16 +22,6 @@ The beginnings of an io game made with socket.io and matter.js. You can try it [
     ```
 
 
-* In public/login.js there is a line that looks like this:
-    ```javascript
-    socket = io.connect('raphael-macbook.local:8080')
-    ```
-    Change it to:
-    ```javascript
-    socket = io.connect('your-local-ip:8080')
-    ```
-
-
 * Run the server:
     ```bash
     node server.js
